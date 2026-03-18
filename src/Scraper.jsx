@@ -43,7 +43,7 @@ const Scraper = () => {
       </button>
 
       {results && (
-        <div style={{ marginTop: '20px', textAlign: 'left', background: '#f4f4f4', padding: '15px' }}>
+        <div style={{ marginTop: '20px', textAlign: 'left', background: '#eeededff', padding: '15px', color: '#000' }}>
           <h3>Results Found: {results.matches?.length || 0}</h3>
           <ul>
             {results.matches?.map((match, i) => (

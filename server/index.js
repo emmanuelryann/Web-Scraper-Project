@@ -4,13 +4,14 @@ import cors from 'cors';
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // Allows the server to read JSON from the frontend
+app.use(express.json());
 
 async function universalEngine(url, options) {
-    const browser = await puppeteer.launch({ headless: "new" }); // "new" is production-ready
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(60000);
 
+    
     try {
         await page.goto(url, { waitUntil: 'networkidle2' });
         
@@ -41,36 +42,27 @@ async function universalEngine(url, options) {
 // THE API ROUTE
 app.post('/api/scrape', async (req, res) => {
     const { url, keyword, contentType } = req.body;
-    console.log(`📩 Request received! URL: ${url}, Keyword: ${keyword}`); // NEW LINE
+    console.log(`📩 Request received! URL: ${url}, Keyword: ${keyword}`);
 
     if (!url) return res.status(400).json({ error: "URL is required" });
 
     try {
-        console.log("🚀 Launching Browser..."); // NEW LINE
+        console.log(`🔎 Scraping: ${url}`);
         const data = await universalEngine(url, { keyword, contentType });
-        console.log("✅ Scrape Successful! Sending data back..."); // NEW LINE
+        console.log("✅ Scrape Successful! Sending data back...");
         res.json(data);
     } catch (error) {
-        console.error("❌ API Route Error:", error); // NEW LINE
+        console.error("❌ API Route Error:", error);
         res.status(500).json({ error: "Scraping failed", details: error.message });
     }
 });
 
 const PORT = 8080;
 app.listen(PORT, () => {
-    console.log(`--- SERVER STARTED ---`);
-    console.log(`Listening on: http://localhost:${PORT}`);
-    console.log(`To stop the server: Press CTRL + C`);
-    console.log(`-----------------------`);
+    console.log(`🚀 Scraper Backend live at http://localhost:${PORT}`);
 });
 
-setInterval(() => {}, 1000);
+// setInterval(() => {}, 1000);
 
-process.on('uncaughtException', (err) => {
-    console.error('🔥 CRASH DETECTED:', err);
-    process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('🔥 UNHANDLED REJECTION:', reason);
-});
+process.on('uncaughtException', (err) => console.error('🔥 System Error:', err));
+process.on('unhandledRejection', (reason) => console.error('🔥 Promise Error:', reason));
