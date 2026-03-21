@@ -5,13 +5,12 @@ const Scraper = () => {
     url: '', 
     keyword: '', 
     contentType: 'text', 
-    filterType: 'sentence' // New default state
+    filterType: 'sentence'
   });
   const [results, setResults] = useState(null);
-  const [error, setError] = useState(null); // To catch PDF/Network errors
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Helper function to highlight keywords
   const highlightText = (text, highlight) => {
     if (!highlight.trim()) return text;
     const regex = new RegExp(`(${highlight})`, 'gi');
@@ -33,7 +32,7 @@ const Scraper = () => {
       if (response.ok) {
         setResults(data);
       } else {
-        setError(data.error); // Set specific error (e.g. "This is a PDF")
+        setError(data.error);
       }
     } catch (err) {
       setError("Failed to connect to the server.");
@@ -76,7 +75,6 @@ const Scraper = () => {
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {results.matches?.map((match, i) => (
               <li key={i} style={{ marginBottom: '15px', borderBottom: '1px solid #ccc', paddingBottom: '5px' }}
-                  // This renders the <mark> tags correctly
                   dangerouslySetInnerHTML={{ __html: highlightText(match, formData.keyword) }} />
             ))}
           </ul>
