@@ -54,8 +54,9 @@ function findMatches(text, keyword, filterType) {
   return extractSentences(text, keyword);
 }
 
+// Extract sentences
 function extractSentences(text, keyword) {
-  const parts = text.split(/([.!?]+[\s]+|[.!?]+$)/g);
+  const parts = text.split(/([.!?]+[\s\n]+|[.!?]+$|\n+)/g);
 
   const sentences = [];
   for (let i = 0; i < parts.length; i += 2) {
@@ -65,19 +66,37 @@ function extractSentences(text, keyword) {
     if (sentence) sentences.push(sentence);
   }
 
-  const keywordLower = keyword.toLowerCase();
-  return sentences.filter(s => s.toLowerCase().includes(keywordLower));
+  const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  const result = [];
+
+  sentences.forEach(s => {
+    const count = (s.match(regex) || []).length;
+    for (let i = 0; i < count; i++) {
+      result.push(s);
+    }
+  });
+
+  return result;
 }
 
 
-// Paragraph Mode
+// Extract paragraphs
 function extractParagraphs(text, keyword) {
   const paragraphs = text.split(/\n{2,}/g)
     .map(p => p.replace(/\n/g, ' ').trim())
     .filter(Boolean);
 
-  const keywordLower = keyword.toLowerCase();
-  return paragraphs.filter(p => p.toLowerCase().includes(keywordLower));
+  const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  const result = [];
+
+  paragraphs.forEach(p => {
+    const count = (p.match(regex) || []).length;
+    for (let i = 0; i < count; i++) {
+      result.push(p);
+    }
+  });
+
+  return result;
 }
 
 

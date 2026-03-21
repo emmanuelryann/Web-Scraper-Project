@@ -22,7 +22,7 @@ const Scraper = () => {
     setResults(null);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8080/api/scrape', {
+      const response = await fetch('http://localhost:8081/api/scrape', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
